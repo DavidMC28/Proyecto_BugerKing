@@ -1,0 +1,28 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Eliminar Producto{% endblock %}
+
+{% block admin_content %}
+<h1 style="color: var(--bk-red); margin-bottom: 2rem;">Eliminar Producto</h1>
+
+<div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 500px; text-align: center;">
+    <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">¿Estás seguro de que quieres eliminar este producto?</h3>
+    
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+        <h4>{{ producto.nombre }}</h4>
+        <p>{{ producto.descripcion }}</p>
+        <p><strong>Precio:</strong> ${{ producto.precio }}</p>
+        {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="max-width: 200px; border-radius: 10px; margin-top: 1rem;">
+        {% endif %}
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+            <a href="{% url 'admin_productos' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

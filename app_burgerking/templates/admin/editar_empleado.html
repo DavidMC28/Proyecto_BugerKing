@@ -1,0 +1,23 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Editar Empleado{% endblock %}
+
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: var(--bk-red);">Editar Empleado</h1>
+    <a href="{% url 'admin_empleados' %}" class="btn">Volver a Empleados</a>
+</div>
+
+<div class="table-container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Actualizar Empleado</button>
+            <a href="{% url 'admin_empleados' %}" class="btn">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

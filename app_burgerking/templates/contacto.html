@@ -1,0 +1,39 @@
+{% extends 'base_cliente.html' %}
+
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center; color: var(--bk-red); margin-bottom: 2rem;">CONTACTO</h1>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Información de Contacto</h3>
+        <p><strong>Teléfono:</strong> 800-123-4567</p>
+        <p><strong>Email:</strong> contacto@burgerking.com</p>
+        <p><strong>Horario:</strong> Lunes a Domingo 7:00 AM - 11:00 PM</p>
+    </div>
+    
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Ubicaciones</h3>
+        <p><strong>Sucursal Centro:</strong> Av. Principal #123</p>
+        <p><strong>Sucursal Norte:</strong> Plaza Comercial Norte</p>
+        <p><strong>Sucursal Sur:</strong> Centro Comercial Sur</p>
+    </div>
+</div>
+
+<div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 2rem;">
+    <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Envíanos un Mensaje</h3>
+    <form>
+        <div class="form-group">
+            <input type="text" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+            <input type="email" placeholder="Tu email">
+        </div>
+        <div class="form-group">
+            <textarea placeholder="Tu mensaje" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+    </form>
+</div>
+{% endblock %}

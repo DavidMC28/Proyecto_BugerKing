@@ -1,0 +1,30 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Editar Producto{% endblock %}
+
+{% block admin_content %}
+<h1 style="color: var(--bk-red); margin-bottom: 2rem;">Editar Producto: {{ producto.nombre }}</h1>
+
+<div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 600px;">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="form-group">
+            <label>{{ field.label }}:</label>
+            {{ field }}
+            {% if field.errors %}
+            <div style="color: red; font-size: 0.8rem; margin-top: 0.3rem;">
+                {{ field.errors }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">Actualizar Producto</button>
+            <a href="{% url 'admin_productos' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

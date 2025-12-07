@@ -1,0 +1,76 @@
+{% extends 'base_cliente.html' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center; color: var(--bk-red); margin-bottom: 2rem;">MI PERFIL</h1>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- Información del Usuario -->
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Información Personal</h3>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Nombre:</label>
+                {{ user_form.first_name }}
+            </div>
+            
+            <div class="form-group">
+                <label>Apellido:</label>
+                {{ user_form.last_name }}
+            </div>
+            
+            <div class="form-group">
+                <label>Email:</label>
+                {{ user_form.email }}
+            </div>
+            
+            <div class="form-group">
+                <label>Teléfono:</label>
+                {{ form.telefono }}
+            </div>
+            
+            <div class="form-group">
+                <label>Dirección:</label>
+                {{ form.direccion }}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+        </form>
+    </div>
+    
+    <!-- Información de Cliente -->
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Información de la Cuenta</h3>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>Usuario:</strong> {{ user.username }}
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>Fecha de Registro:</strong> {{ cliente.fecha_registro|date:"d/m/Y" }}
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>Correo Electrónico:</strong> {{ cliente.correo }}
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <h4 style="color: var(--bk-red); margin-bottom: 1rem;">Historial de Compras Recientes</h4>
+            {% with ventas=cliente.venta_set.all|slice:":5" %}
+                {% if ventas %}
+                    {% for venta in ventas %}
+                    <div style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <strong>Venta #{{ venta.id }}</strong> - {{ venta.fecha|date:"d/m/Y" }} - ${{ venta.total }}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay compras registradas.</p>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+{% endblock %}

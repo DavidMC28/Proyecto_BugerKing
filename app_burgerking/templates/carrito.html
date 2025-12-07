@@ -1,0 +1,46 @@
+{% extends 'base_cliente.html' %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center; color: var(--bk-red); margin-bottom: 2rem;">TU CARRITO DE COMPRAS</h1>
+
+{% if items %}
+<div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+    {% for item in items %}
+    <div style="display: flex; align-items: center; padding: 1rem 0; border-bottom: 1px solid #eee;">
+        <div style="flex: 1;">
+            <h3 style="color: var(--bk-blue); margin-bottom: 0.5rem;">{{ item.producto.nombre }}</h3>
+            <p style="color: #666; margin-bottom: 0.5rem;">{{ item.producto.descripcion|truncatewords:10 }}</p>
+        </div>
+        
+        <div style="margin: 0 2rem;">
+            <form method="post" action="{% url 'actualizar_carrito' item.id %}" style="display: flex; align-items: center; gap: 0.5rem;">
+                {% csrf_token %}
+                <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" style="width: 60px; padding: 0.3rem; border: 1px solid #ddd; border-radius: 5px;">
+                <button type="submit" class="btn btn-secondary btn-small">Actualizar</button>
+            </form>
+        </div>
+        
+        <div style="text-align: right;">
+            <div style="font-size: 1.2rem; font-weight: bold; color: var(--bk-brown); margin-bottom: 0.5rem;">
+                ${{ item.subtotal }} MXN
+            </div>
+            <a href="{% url 'eliminar_carrito' item.id %}" class="btn btn-danger btn-small">Eliminar</a>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <div style="text-align: right; margin-top: 2rem; padding-top: 1rem; border-top: 2px solid var(--bk-red);">
+        <h2 style="color: var(--bk-red);">Total: ${{ total }} MXN</h2>
+        <a href="{% url 'checkout' %}" class="btn btn-primary" style="margin-top: 1rem;">Proceder al Pago</a>
+    </div>
+</div>
+{% else %}
+<div style="text-align: center; padding: 4rem; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+    <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Tu carrito está vacío</h3>
+    <p style="margin-bottom: 2rem;">Descubre nuestros deliciosos productos y añádelos a tu carrito.</p>
+    <a href="{% url 'menu' %}" class="btn btn-primary">Ver Menú</a>
+</div>
+{% endif %}
+{% endblock %}

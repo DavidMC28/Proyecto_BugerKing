@@ -1,0 +1,347 @@
+{% extends 'base_cliente.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center; color: var(--bk-red); margin-bottom: 2rem;">FINALIZAR COMPRA</h1>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Información de Envío</h3>
+        <form method="post" id="checkout-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Dirección:</label>
+                <textarea name="direccion" required style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; resize: vertical; min-height: 80px;">{{ cliente.direccion }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input type="tel" name="telefono" value="{{ cliente.telefono }}" required style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;">
+            </div>
+            
+            <!-- MÉTODO DE PAGO -->
+            <div class="form-group" style="margin: 2rem 0;">
+                <h4 style="color: var(--bk-blue); margin-bottom: 1rem;">Método de Pago</h4>
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 1rem; border: 2px solid #ddd; border-radius: 8px; flex: 1; transition: all 0.3s;">
+                        <input type="radio" name="metodo_pago" value="efectivo" checked style="transform: scale(1.2);">
+                        <span style="font-weight: bold;">💰 EFECTIVO</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 1rem; border: 2px solid #ddd; border-radius: 8px; flex: 1; transition: all 0.3s;">
+                        <input type="radio" name="metodo_pago" value="tarjeta" style="transform: scale(1.2);">
+                        <span style="font-weight: bold;">💳 TARJETA</span>
+                    </label>
+                </div>
+                
+                <!-- Mensaje informativo -->
+                <div id="mensaje-pago" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--bk-blue); margin-bottom: 1.5rem;">
+                    <strong>💵 Pago en efectivo:</strong> Realiza el pago al momento de la entrega.
+                </div>
+                
+                <!-- FORMULARIO DE TARJETA (OCULTO INICIALMENTE) -->
+                <div id="form-tarjeta" style="display: none; background: #f9f9f9; padding: 1.5rem; border-radius: 10px; border: 2px dashed #ddd; margin-top: 1rem;">
+                    <h5 style="color: var(--bk-red); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🔒</span> Información de Tarjeta
+                    </h5>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label style="font-size: 0.9rem;">Número de Tarjeta</label>
+                            <input type="text" name="numero_tarjeta" id="numero-tarjeta" 
+                                   placeholder="1234 5678 9012 3456" maxlength="19"
+                                   style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;"
+                                   pattern="[0-9\s]{13,19}" autocomplete="cc-number">
+                            <small style="color: #666; font-size: 0.8rem;">Ingresa 16 dígitos</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="font-size: 0.9rem;">CVV</label>
+                            <input type="password" name="cvv_tarjeta" maxlength="3" 
+                                   placeholder="123" 
+                                   style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;"
+                                   pattern="[0-9]{3}" autocomplete="cc-csc">
+                            <small style="color: #666; font-size: 0.8rem;">3 dígitos al reverso</small>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label style="font-size: 0.9rem;">Nombre en la Tarjeta</label>
+                            <input type="text" name="nombre_tarjeta" 
+                                   placeholder="JUAN PEREZ" 
+                                   style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;"
+                                   autocomplete="cc-name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="font-size: 0.9rem;">Fecha de Expiración</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <select name="mes_expiracion" id="mes-expiracion" style="flex: 1; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;">
+                                    <option value="">Mes</option>
+                                    <option value="01">01 - Enero</option>
+                                    <option value="02">02 - Febrero</option>
+                                    <option value="03">03 - Marzo</option>
+                                    <option value="04">04 - Abril</option>
+                                    <option value="05">05 - Mayo</option>
+                                    <option value="06">06 - Junio</option>
+                                    <option value="07">07 - Julio</option>
+                                    <option value="08">08 - Agosto</option>
+                                    <option value="09">09 - Septiembre</option>
+                                    <option value="10">10 - Octubre</option>
+                                    <option value="11">11 - Noviembre</option>
+                                    <option value="12">12 - Diciembre</option>
+                                </select>
+                                <select name="ano_expiracion" id="ano-expiracion" style="flex: 1; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;">
+                                    <option value="">Año</option>
+                                    <!-- Los años se generarán con JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding: 0.8rem; background: #e8f4fd; border-radius: 8px; border-left: 4px solid #2196F3;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                            <span>🛡️</span>
+                            <span><strong>Pago seguro:</strong> Tus datos están encriptados y protegidos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="btn-confirmar" style="width: 100%; padding: 1.2rem; font-size: 1.1rem; font-weight: bold;">
+                ✅ CONFIRMAR COMPRA
+            </button>
+        </form>
+    </div>
+    
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: var(--bk-blue); margin-bottom: 1rem;">Resumen del Pedido</h3>
+        
+        {% if items %}
+            {% for item in items %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                <div style="flex: 1;">
+                    <strong>{{ item.producto.nombre }}</strong>
+                    <div style="font-size: 0.9rem; color: #666;">Cantidad: {{ item.cantidad }}</div>
+                </div>
+                <span style="font-weight: bold; color: var(--bk-brown);">${{ item.subtotal }} MXN</span>
+            </div>
+            {% endfor %}
+            
+            <div style="border-top: 2px solid var(--bk-red); padding-top: 1rem; margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                    <span>Total:</span>
+                    <span style="color: var(--bk-red);">${{ total }} MXN</span>
+                </div>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem; color: #666;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
+                <p>No hay productos en el carrito</p>
+                <a href="{% url 'menu' %}" class="btn btn-primary" style="margin-top: 1rem;">Agregar Productos</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: var(--bk-dark);
+    }
+    
+    input[type="radio"]:checked + span {
+        color: var(--bk-red);
+    }
+    
+    label:hover {
+        border-color: var(--bk-blue) !important;
+    }
+    
+    input[type="radio"]:checked ~ span {
+        color: var(--bk-red);
+        font-weight: bold;
+    }
+    
+    /* Estilos para inputs de tarjeta */
+    .iconos-tarjetas {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .icono-tarjeta {
+        width: 40px;
+        height: 25px;
+        background: #eee;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        color: #666;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const radioEfectivo = document.querySelector('input[value="efectivo"]');
+        const radioTarjeta = document.querySelector('input[value="tarjeta"]');
+        const mensajePago = document.getElementById('mensaje-pago');
+        const formTarjeta = document.getElementById('form-tarjeta');
+        const btnConfirmar = document.getElementById('btn-confirmar');
+        const checkoutForm = document.getElementById('checkout-form');
+        const numeroTarjeta = document.getElementById('numero-tarjeta');
+        const selectAnio = document.getElementById('ano-expiracion');
+        
+        // Generar años para el select (desde el año actual hasta +10 años)
+        function generarAnios() {
+            if (!selectAnio) return;
+            
+            // Limpiar opciones existentes excepto la primera
+            while (selectAnio.options.length > 1) {
+                selectAnio.remove(1);
+            }
+            
+            const anioActual = new Date().getFullYear();
+            for (let i = 0; i <= 10; i++) {
+                const anio = anioActual + i;
+                const option = document.createElement('option');
+                option.value = anio;
+                option.textContent = anio;
+                selectAnio.appendChild(option);
+            }
+        }
+        
+        function actualizarMensaje() {
+            if (radioTarjeta.checked) {
+                mensajePago.innerHTML = `
+                    <strong>💳 Pago con tarjeta:</strong> Completa los datos de tu tarjeta para un pago seguro.
+                `;
+                mensajePago.style.borderLeftColor = 'var(--bk-red)';
+                formTarjeta.style.display = 'block';
+                btnConfirmar.innerHTML = '🔒 PAGAR CON TARJETA';
+            } else {
+                mensajePago.innerHTML = `
+                    <strong>💵 Pago en efectivo:</strong> Realiza el pago al momento de la entrega.
+                `;
+                mensajePago.style.borderLeftColor = 'var(--bk-blue)';
+                formTarjeta.style.display = 'none';
+                btnConfirmar.innerHTML = '✅ CONFIRMAR COMPRA';
+            }
+        }
+        
+        // Formatear número de tarjeta (agrega espacios cada 4 dígitos)
+        if (numeroTarjeta) {
+            numeroTarjeta.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+                e.target.value = formatted.substring(0, 19); // 16 dígitos + 3 espacios
+            });
+        }
+        
+        // Manejar el envío del formulario
+        checkoutForm.addEventListener('submit', function(e) {
+            // Obtener el método de pago seleccionado
+            const metodoSeleccionado = document.querySelector('input[name="metodo_pago"]:checked').value;
+            const totalElement = document.querySelector('span[style*="color: var(--bk-red)"]');
+            const totalTexto = totalElement ? totalElement.textContent.replace('$', '').replace(' MXN', '') : '{{ total }}';
+            
+            if (metodoSeleccionado === 'efectivo') {
+                // Confirmar compra con efectivo
+                if (!confirm(`¿Confirmar compra por $${totalTexto} MXN?\n\n💰 Pagarás en efectivo al momento de la entrega.`)) {
+                    e.preventDefault();
+                    return false;
+                }
+            } else if (metodoSeleccionado === 'tarjeta') {
+                // Prevenir envío para validar primero
+                e.preventDefault();
+                
+                // Validar campos de tarjeta
+                const numero = document.querySelector('input[name="numero_tarjeta"]')?.value.replace(/\s/g, '') || '';
+                const cvv = document.querySelector('input[name="cvv_tarjeta"]')?.value || '';
+                const nombre = document.querySelector('input[name="nombre_tarjeta"]')?.value || '';
+                const mes = document.querySelector('select[name="mes_expiracion"]')?.value || '';
+                const ano = document.querySelector('select[name="ano_expiracion"]')?.value || '';
+                
+                let errores = [];
+                
+                if (numero.length !== 16) {
+                    errores.push('El número de tarjeta debe tener 16 dígitos');
+                }
+                
+                if (cvv.length !== 3) {
+                    errores.push('El CVV debe tener 3 dígitos');
+                }
+                
+                if (!nombre.trim()) {
+                    errores.push('Ingresa el nombre como aparece en la tarjeta');
+                }
+                
+                if (!mes) {
+                    errores.push('Selecciona el mes de expiración');
+                }
+                
+                if (!ano) {
+                    errores.push('Selecciona el año de expiración');
+                }
+                
+                if (errores.length > 0) {
+                    alert('❌ Por favor corrige los siguientes errores:\n\n' + errores.join('\n'));
+                    return false;
+                }
+                
+                // Confirmar pago con tarjeta
+                if (confirm(`⚠️ ¿Estás seguro de proceder con el pago con tarjeta?\n\nSe realizará un cargo de $${totalTexto} MXN a tu tarjeta.`)) {
+                    // Si confirma, enviar el formulario
+                    this.submit();
+                }
+            }
+        });
+        
+        // Estilo visual para selección de método de pago
+        const labels = document.querySelectorAll('label[style*="cursor: pointer"]');
+        labels.forEach(label => {
+            const radio = label.querySelector('input[type="radio"]');
+            
+            if (radio) {
+                // Aplicar estilo inicial
+                if (radio.checked) {
+                    label.style.borderColor = 'var(--bk-red)';
+                    label.style.background = '#fff5f5';
+                }
+                
+                radio.addEventListener('change', function() {
+                    labels.forEach(l => {
+                        l.style.borderColor = '#ddd';
+                        l.style.background = 'white';
+                    });
+                    
+                    if (this.checked) {
+                        label.style.borderColor = 'var(--bk-red)';
+                        label.style.background = '#fff5f5';
+                    }
+                });
+            }
+        });
+        
+        // Inicializar
+        generarAnios();
+        actualizarMensaje();
+        
+        // Event listeners para cambios en el método de pago
+        radioEfectivo.addEventListener('change', actualizarMensaje);
+        radioTarjeta.addEventListener('change', actualizarMensaje);
+    });
+</script>
+{% endblock %}

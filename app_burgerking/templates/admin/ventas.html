@@ -1,0 +1,48 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Gestión de Ventas{% endblock %}
+
+{% block admin_content %}
+<h1 style="color: var(--bk-red); margin-bottom: 2rem;">Gestión de Ventas</h1>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.id }}</td>
+                <td>{{ venta.fecha|date:"d/m/Y H:i" }}</td>
+                <td>{{ venta.cliente }}</td>
+                <td>${{ venta.total }}</td>
+                <td>
+                    {% if venta.completada %}
+                    <span style="color: green;">Completada</span>
+                    {% else %}
+                    <span style="color: orange;">Pendiente</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="#" class="btn btn-secondary btn-small">Ver Detalles</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem;">
+                    No hay ventas registradas.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Agregar Categoría{% endblock %}
+
+{% block admin_content %}
+<div class="admin-header">
+    <h1>Agregar Nueva Categoría</h1>
+    <a href="{% url 'admin_categorias' %}" class="btn">Volver a Categorías</a>
+</div>
+
+<div class="table-container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nombre">Nombre de la Categoría:</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="100">
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Categoría</button>
+            <a href="{% url 'admin_categorias' %}" class="btn">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

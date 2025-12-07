@@ -1,0 +1,66 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Gestión de Proveedores{% endblock %}
+
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: var(--bk-red);">Gestión de Proveedores</h1>
+    <a href="{% url 'agregar_proveedor' %}" class="btn btn-primary">Agregar Proveedor</a>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Empresa</th>
+                <th>Contacto</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Categoría</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proveedor in proveedores %}
+            <tr>
+                <td>
+                    {% if proveedor.foto %}
+                    <img src="{{ proveedor.foto.url }}" alt="{{ proveedor.empresa }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                    {% else %}
+                    <div style="width: 50px; height: 50px; background: #eee; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #666;">
+                        Sin logo
+                    </div>
+                    {% endif %}
+                </td>
+                <td>{{ proveedor.empresa }}</td>
+                <td>{{ proveedor.contacto }}</td>
+                <td>{{ proveedor.telefono }}</td>
+                <td>{{ proveedor.email }}</td>
+                <td>{{ proveedor.categoria }}</td>
+                <td>
+                    {% if proveedor.activo %}
+                    <span style="color: green;">Activo</span>
+                    {% else %}
+                    <span style="color: red;">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'editar_proveedor' proveedor.id %}" class="btn btn-secondary btn-small">Editar</a>
+                        <a href="{% url 'eliminar_proveedor' proveedor.id %}" class="btn btn-danger btn-small">Eliminar</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 2rem;">
+                    No hay proveedores registrados.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

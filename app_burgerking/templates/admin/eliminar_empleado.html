@@ -1,0 +1,31 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Eliminar Empleado{% endblock %}
+
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: var(--bk-red);">Eliminar Empleado</h1>
+    <a href="{% url 'admin_empleados' %}" class="btn">Volver a Empleados</a>
+</div>
+
+<div class="table-container">
+    <div class="alert alert-warning">
+        <h3>¿Estás seguro de que quieres eliminar este empleado?</h3>
+        
+        <p><strong>Nombre:</strong> {{ empleado.nombre }}</p>
+        <p><strong>Puesto:</strong> {{ empleado.puesto }}</p>
+        <p><strong>Salario:</strong> ${{ empleado.salario }}</p>
+        <p><strong>Fecha de Contratación:</strong> {{ empleado.fecha_contratacion }}</p>
+        
+        <p class="alert alert-danger">⚠️ Advertencia: Esta acción no se puede deshacer.</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Sí, Eliminar Empleado</button>
+            <a href="{% url 'admin_empleados' %}" class="btn">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

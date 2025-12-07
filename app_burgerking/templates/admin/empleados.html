@@ -1,0 +1,66 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Gestión de Empleados{% endblock %}
+
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: var(--bk-red);">Gestión de Empleados</h1>
+    <!-- CORRECCIÓN: Agregar la URL correcta -->
+    <a href="{% url 'agregar_empleado' %}" class="btn btn-primary">Agregar Empleado</a>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Nombre</th>
+                <th>Puesto</th>
+                <th>Salario</th>
+                <th>Fecha Contratación</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for empleado in empleados %}
+            <tr>
+                <td>
+                    {% if empleado.foto %}
+                    <img src="{{ empleado.foto.url }}" alt="{{ empleado.nombre }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                    {% else %}
+                    <div style="width: 50px; height: 50px; background: #eee; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #666;">
+                        Sin foto
+                    </div>
+                    {% endif %}
+                </td>
+                <td>{{ empleado.nombre }}</td>
+                <td>{{ empleado.get_puesto_display }}</td>
+                <td>${{ empleado.salario }}</td>
+                <td>{{ empleado.fecha_contratacion }}</td>
+                <td>
+                    {% if empleado.activo %}
+                    <span style="color: green;">Activo</span>
+                    {% else %}
+                    <span style="color: red;">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <!-- CORRECCIÓN: Agregar enlaces para editar y eliminar -->
+                        <a href="{% url 'editar_empleado' empleado.id %}" class="btn btn-secondary btn-small">Editar</a>
+                        <a href="{% url 'eliminar_empleado' empleado.id %}" class="btn btn-danger btn-small">Eliminar</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem;">
+                    No hay empleados registrados.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

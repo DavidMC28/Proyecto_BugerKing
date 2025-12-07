@@ -1,0 +1,27 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Eliminar Categoría{% endblock %}
+
+{% block admin_content %}
+<div class="admin-header">
+    <h1>Eliminar Categoría</h1>
+    <a href="{% url 'admin_categorias' %}" class="btn">Volver a Categorías</a>
+</div>
+
+<div class="table-container">
+    <div class="alert alert-warning">
+        <h3>¿Estás seguro de que quieres eliminar esta categoría?</h3>
+        <p><strong>Categoría:</strong> {{ categoria.nombre }}</p>
+        <p><strong>ID:</strong> {{ categoria.id }}</p>
+        <p class="alert alert-danger">⚠️ Advertencia: Esta acción no se puede deshacer.</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+            <a href="{% url 'admin_categorias' %}" class="btn">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

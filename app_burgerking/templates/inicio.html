@@ -1,0 +1,108 @@
+{% extends 'base_cliente.html' %}
+{% load static %}
+
+{% block page_title %}INICIO{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<div class="hero-banner" style="background: linear-gradient(135deg, #D6232E, #A51E26); color: white; text-align: center; padding: 4rem 2rem; border-radius: 15px; margin-bottom: 3rem; border: 3px solid #FFC72C;">
+    <h1 style="font-size: 3rem; margin-bottom: 1.5rem; color: #FFC72C; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">¡BIENVENIDO!</h1>
+    <p style="font-size: 1.3rem; margin-bottom: 2.5rem; font-weight: bold;">Disfruta de la auténtica experiencia Burger King</p>
+    <a href="{% url 'menu' %}" style="background: #FFC72C; color: #333; padding: 1.2rem 2.5rem; font-size: 1.2rem; font-weight: bold; border-radius: 30px; text-decoration: none; display: inline-block; border: 2px solid #FFC72C; transition: all 0.3s ease;">
+        VER MENÚ COMPLETO
+    </a>
+</div>
+
+<!-- Promociones Destacadas -->
+<section style="margin-bottom: 4rem;">
+    <h2 style="color: #0033A0; margin-bottom: 2rem; font-size: 2rem; border-bottom: 4px solid #FFC72C; padding-bottom: 0.8rem; text-transform: uppercase;">
+        🔥 PROMOCIONES DESTACADAS
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem;">
+        {% for producto in productos_destacados %}
+        <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: all 0.3s ease; border: 2px solid #FFC72C;">
+            <div style="width: 100%; height: 220px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" 
+                         style="width: 100%; height: 100%; object-fit: contain; padding: 10px;">
+                {% else %}
+                    <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #D6232E, #FFC72C); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
+                        🍔
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div style="padding: 2rem;">
+                <div style="background: #D6232E; color: white; padding: 0.8rem 1.5rem; border-radius: 25px; font-size: 1rem; font-weight: bold; display: inline-block; margin-bottom: 1.2rem; border: 2px solid #FFC72C;">
+                    🏷️ PROMOCIÓN
+                </div>
+                <h3 style="color: #0033A0; margin-bottom: 0.8rem; font-size: 1.4rem; font-weight: bold;">{{ producto.nombre }}</h3>
+                <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    {{ producto.descripcion|truncatewords:20 }}
+                </p>
+                <div style="font-size: 1.8rem; font-weight: bold; color: #8B4513; margin-bottom: 2rem; text-align: center;">
+                    ${{ producto.precio }} MXN
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <!-- SOLO MOSTRAR BOTÓN AGREGAR AL CARRITO SI NO ES ADMINISTRADOR -->
+                    {% if not user.is_staff %}
+                    <form method="post" action="{% url 'agregar_carrito' producto.id %}">
+                        {% csrf_token %}
+                        <button type="submit" style="background: #FFC72C; color: #333; padding: 1rem 2rem; border: 2px solid #FFC72C; border-radius: 30px; font-weight: bold; cursor: pointer; width: 100%; transition: all 0.3s ease; font-size: 1.1rem;">
+                            🛒 AGREGAR AL CARRITO
+                        </button>
+                    </form>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'login' %}" style="background: #0033A0; color: white; padding: 1rem 2rem; border: 2px solid #0033A0; border-radius: 30px; font-weight: bold; text-decoration: none; display: block; text-align: center; transition: all 0.3s ease; font-size: 1.1rem;">
+                    🔑 INICIAR SESIÓN
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: #F8F8F8; border-radius: 15px; border: 2px dashed #D6232E;">
+            <div style="font-size: 5rem; margin-bottom: 1.5rem;">🍔</div>
+            <h3 style="color: #D6232E; margin-bottom: 1rem; font-size: 1.5rem;">NO HAY PROMOCIONES DISPONIBLES</h3>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 2rem;">El administrador aún no ha agregado promociones especiales.</p>
+            <a href="{% url 'menu' %}" style="background: #D6232E; color: white; padding: 1rem 2rem; border-radius: 30px; text-decoration: none; display: inline-block; font-weight: bold; border: 2px solid #D6232E;">
+                VER MENÚ COMPLETO
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+    .hero-banner:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(214, 35, 46, 0.3);
+    }
+    
+    div[style*="box-shadow"]:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    
+    button:hover, a[style*="background"]:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        background: #E6B325 !important;
+        border-color: #E6B325 !important;
+    }
+    
+    a[style*="background: #0033A0"]:hover {
+        background: #002266 !important;
+        border-color: #002266 !important;
+    }
+    
+    /* Estilos específicos para las imágenes */
+    img[alt*="promo"] {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+</style>
+{% endblock %}
